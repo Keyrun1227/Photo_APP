@@ -1,0 +1,203 @@
+
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css);
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+
+
+html,body,* { box-sizing: border-box; font-size: 16px;}
+html,body   { height: 100%; text-align: center;}
+body        { padding: 2rem; background: #f8f8f8;}
+
+h2 {
+  font-family: "Roboto", sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color:  #454cad;
+  margin-bottom: 0;
+}
+h3 {
+  font-family: "Roboto", sans-serif;
+  font-size: 26px;
+  line-height: 1;
+  color:  #454cad;
+  /* margin-bottom: 0; */
+
+}
+p {
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+  color: #5f6982;
+}
+
+.uploader {
+  display: block;
+  clear: both;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 600px;
+}
+  label {
+    float: left;
+    clear: both;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 7px;
+    border: 3px solid #eee;
+    transition: all .2s ease;
+    user-select: none;
+  }
+    :hover {
+      border-color:  #454cad;
+    }
+    .hover {
+      border: 3px solid  #454cad;
+      box-shadow: inset 0 0 0 6px #eee;
+    }
+
+        i.fa {
+          transform: scale(0.8);
+          opacity: 0.3;
+        }
+      
+
+  #start {
+    float: left;
+    clear: both;
+    width: 100%;
+  }
+    .hidden {
+      display: none;
+    }
+    i.fa {
+      font-size: 50px;
+      margin-bottom: 1rem;
+      transition: all .2s ease-in-out;
+    }
+
+  #response {
+    float: left;
+    clear: both;
+    width: 100%;
+  }
+    .hidden {
+      display: none;
+    }
+    #messages {
+      margin-bottom: .5rem;
+    }
+
+  #file-image {
+    display: inline;
+    margin: 0 auto .5rem auto;
+    width: auto;
+    height: auto;
+    max-width: 180px;
+  }
+    .hidden {
+      display: none;
+    }
+
+  #notimage {
+    display: block;
+    float: left;
+    clear: both;
+    width: 200%;
+    
+  }
+    .hidden {
+      display: none;
+    }
+  
+
+  progress,
+  .progress {
+    appearance: none;
+    display: inline;
+    clear: both;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 180px;
+    height: 8px;
+    border: 0;
+    border-radius: 4px;
+    background-color: #eee;
+    overflow: hidden;
+  }
+
+  .progress[value]::-webkit-progress-bar {
+    border-radius: 4px;
+    background-color: #eee;
+  }
+
+  .progress[value]::-webkit-progress-value {
+    background: linear-gradient(to right, darken( #454cad,8%) 0%,  #454cad 50%);
+    border-radius: 4px; 
+  }
+  .progress[value]::-moz-progress-bar {
+    background: linear-gradient(to right, darken( #454cad,8%) 0%,  #454cad 50%);
+    border-radius: 4px; 
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  div {
+    margin: 0 0 .5rem 0;
+    color: #5f6982;
+  }
+  .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #454cad;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #3b4094;
+}
+
+
+  /* Custom styles */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+}
+
+.logo img {
+    height: auto; /* Adjust the height as needed */
+    width: auto;
+}
+@media screen and (max-width: 768px) {
+    .logo img {
+        height: 40px; /* Adjust the height for smaller screens */
+    }
+}
+body {
+  background-image: url("background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+   

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .button-area {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center;
+        margin-top: 20px; /* Add some space between the image and button */
+      }
+      .button-area button {
+        color: #fff;
+        display: block;
+        width: 160px !important;
+        height: 45px;
+        outline: none;
+        font-size: 18px;
+        font-weight: 500;
+        border-radius: 6px;
+        cursor: pointer;
+        flex-wrap: nowrap;
+        background: rgb(18, 60, 228);
+        border: 2px solid rgb(18, 60, 228);
+        transition: all 0.3s ease;
+      }
+      .button-area button:hover {
+        color: rgb(18, 60, 228);
+        background: none;
+      }
+    </style>
+  </head>
+  <body>
+    <img
+      src="https://play-lh.googleusercontent.com/3f-PPSFLSpORr_N5HwtJEtagxCKI75EDGrq7pCsRCjv-l3Uzoz8lcjrFGRaYKSp8xyA"
+      style="
+        padding-top: 3rem;
+        width: 300px;
+        height: 300px;
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    />
+    <h1
+      style="
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      Thanks for Visiting</h1>
+    <h1
+      style="
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      "
+    >
+      Form Submitted Successfully</h1>
+      <div class="button-area">
+        <a href="/" id="goBackButton"><button type="submit">Go Back</button></a>
+      </div>
+      
+      <script>
+        // Function to extract URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(window.location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Get the event ID from the URL
+        const eventId = getUrlParameter('eventId');
+
+        // Update the "Go Back" button's link with the dynamic event ID
+        const goBackButton = document.getElementById('goBackButton');
+        if (eventId) {
+            goBackButton.href = "/userpage.html?eventId=" + eventId;
+        } else {
+            // If there's no event ID in the URL, go back to the default userpage.html
+            goBackButton.href = "/userpage.html";
+        }
+    </script>
+      
+  </body>
+</html>

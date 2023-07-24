@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Events Management</title>
+</head>
+<link rel="stylesheet" href="css/event.css" />
+<body>
+  <!-- Navigation Bar -->
+  <nav style="height: 4rem;">
+    <div>
+      <img style="padding-top: 10px;" src="images/logo1.jpg" height="50px"  alt="Logo">
+      <span style="font-size: 40px;">Face Recognition</span>
+    </div>
+    <div id="user-profile">
+      <span style="font-size: 30px;" id="user-email"></span>
+     <a href="login.html" style="font-size: 10px;color:red"><span>Logout</span></a>
+      
+      
+    </div>
+  </nav>
+ <!-- Event Form -->
+  <div id="event-form">
+    <h2>Add New Event</h2>
+    <form id="add-event-form">
+      <label for="event-name">Event Name:</label>
+      <input type="text" id="event-name" required><br>
+      <label for="event-date">Date:</label>
+      <input type="date" id="event-date" required><br>
+      <input type="submit" value="Submit">
+      <button type="button" id="back-button">Back</button>
+    </form>
+  </div>
+  <!-- Events Container -->
+  <div id="events-container">
+    <!-- Add Event Button -->
+    <button id="add-event-button">Add Event</button>
+    <!-- Events List -->
+    <h2>EVENT DETAILS</h2>
+    <table id="events-list">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Event ID</th>
+          <th>Date</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Events will be displayed here -->
+      </tbody>
+    </table>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+  <script>
+    // Your Firebase configuration (replace with your actual Firebase config)
+    var firebaseConfig = {
+        apiKey: "AIzaSyAaYoaceYk3q-jRCla2HCPiDUHJOpkAx-4",
+        authDomain: "photoapplogin-48b0d.firebaseapp.com",
+        databaseURL: "https://photoapplogin-48b0d-default-rtdb.firebaseio.com",
+        projectId: "photoapplogin-48b0d",
+        storageBucket: "photoapplogin-48b0d.appspot.com",
+        messagingSenderId: "55404220547",
+        appId: "1:55404220547:web:5519806fc6b77089a84bb6",
+        measurementId: "G-RF3BM9QE2B"
+      };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const storage = firebase.storage();
+    const eventsRef = database.ref('events');
+
+    // Function to get the current user's email and display it in the user profile section
+    function displayUserEmail() {
+      const userEmail = document.getElementById('user-email');
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          userEmail.textContent = user.email;
+        }
+      });
+    }
+     
+
+
+
+  // Add an event listener to check the authentication state and call displayUserEvents()
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      // User is authenticated, call the function to display their events
+      displayUserEvents();
+    } else {
+      // User is not authenticated or logged out, you may handle this accordingly
+      console.log('User not logged in');
+    }
+  });
+  function displayUserEvents() {
+    const eventsList = document.querySelector('#events-list tbody');
+    eventsList.innerHTML = '';
+  
+    // Check if a user is logged in
+    const user = auth.currentUser;
+    if (user) {
+      // Fetch the user's events from the database based on their user ID
+      eventsRef
+        .orderByChild('userId')
+        .equalTo(user.uid)
+        .on('child_added', snapshot => {
+          const event = snapshot.val();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${event.name}</td>
+            <td>${event.eventId}</td>
+            <td>${event.date}</td>
+            <td><button onclick="viewEventDetails('${snapshot.key}')">View</button></td>
+          `;
+          eventsList.appendChild(row);
+        });
+    }
+  }
+  
+  function viewEventDetails(eventId) {
+    const generatedEventId = eventId;
+    window.location.href = `userpage.html?eventId=${generatedEventId}`;
+  }
+  
+  
+  function addEventToDatabaseAndStorage(eventName, eventDate) {
+    // Generate the Event ID based on the event name and a random integer
+    const eventId = generateEventID(eventName);
+  
+    // Get the currently logged-in user
+    const user = auth.currentUser;
+  
+    // Check if a user is logged in
+    if (user) {
+      // Add the new event to the database along with the user's ID
+      eventsRef
+        .child(eventId)
+        .set({
+          name: eventName,
+          date: eventDate,
+          eventId: eventId,
+          userId: user.uid, // Store the user's ID in the database
+        })
+        .then(() => {
+          console.log('Event added to database:', eventId);
+  
+          // Create a reference to the folder in the "ADMIN" bucket of Firebase Storage with the eventId as the folder name
+          const eventStorageRef = storage.ref().child('ADMIN/' + eventId);
+  
+          // Put an empty string in the folder to simulate folder creation
+          eventStorageRef
+            .child('empty.txt') // You can use any name here, or even an empty string '' as the file name
+            .putString('')
+            .then(() => {
+              console.log('Event folder created:', eventId);
+            })
+            .catch((error) => {
+              console.error('Error creating event folder in storage:', error);
+            });
+  
+          // Clear the form fields
+          document.getElementById('event-name').value = '';
+          document.getElementById('event-date').value = '';
+  
+          // Close the event form
+          const eventForm = document.getElementById('event-form');
+          eventForm.style.display = 'none';
+        })
+        .catch((error) => {
+          console.error('Error adding event to database:', error);
+        });
+    } else {
+      console.error('No user logged in. Unable to add event.');
+    }
+  }
+    // Function to generate Event ID based on the event name and a random integer from 1 to 9999
+    function generateEventID(eventName) {
+      const randomInteger = Math.floor(Math.random() * 9999) + 1;
+      return eventName.replace(/\s+/g, '-') + '-' + randomInteger;
+    }
+
+    // Function to open the event form as a dialog box and add event to the table on submit
+    document.getElementById('add-event-button').addEventListener('click', function () {
+      const eventForm = document.getElementById('event-form');
+      eventForm.style.display = 'block';
+    });
+
+    document.getElementById('back-button').addEventListener('click', function () {
+      const eventForm = document.getElementById('event-form');
+      eventForm.style.display = 'none';
+    });
+
+    document.getElementById('add-event-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      // Get the event details from the form
+      const eventName = document.getElementById('event-name').value;
+      const eventDate = document.getElementById('event-date').value;
+
+      // Add the new event to the database and create a folder in Firebase Storage
+      addEventToDatabaseAndStorage(eventName, eventDate);
+    });
+
+    // Call the displayUserEvents function to show the user's events on page load
+    displayUserEvents();
+    displayUserEmail();
+  </script>
+</body>
+</html>
