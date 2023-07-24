@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Submission</title>
+    <title>Event Page</title>
     <link rel="stylesheet" href="css/userpage.css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -28,7 +28,8 @@
       <div class="form-group">
           <input type="text" id="event-id" name="event-id" placeholder="Enter your unique_id" required>
       </div> 
-      <input id="file-upload" type="file" name="photo" accept="image/*" required>
+     
+      <input id="file-upload" type="file" name="photo" accept="image/*" style="display: none;" required>
     
       <label for="file-upload" id="file-drag">
           <img id="file-image" src="#" alt="" class="hidden">
@@ -46,11 +47,14 @@
           </div>
       </label>
       
-      <button class="btn btn-primary" type="button" id="captureBtn">Capture Image</button>
-      <button class="btn btn-primary" type="submit" id="submit" name="submit">Upload</button>
+
+
+      <span id="capture-button" class="btn btn-primary">Take a Picture</span>
+<button class="btn btn-primary" type="submit" id="submit" name="submit">Upload</button>
       
   </form>
-  <video id="video" width="300" height="300" autoplay ></video><br><br>
+  <video id="video" width="300" height="300" autoplay></video>
+ 
     <!-- Add this before your script -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
@@ -58,39 +62,7 @@
 
     <script>
 
-      function startVideoStream() {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    let video = document.getElementById('video');
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(function(err) {
-                    console.log("Error accessing the camera: " + err);
-                });
-        }
-
-        // Function to handle image capture
-        document.getElementById('captureBtn').addEventListener('click', function() {
-            let video = document.getElementById('video');
-            let canvas = document.createElement('canvas');
-            canvas.width = 640;
-            canvas.height = 480;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Show the captured image as a preview
-            let imgPreview = document.getElementById('file-image');
-            imgPreview.src = canvas.toDataURL();
-            imgPreview.classList.remove("hidden");
-            
-            // Show the upload button
-            let uploadBtn = document.getElementById('submit');
-   
-            uploadBtn.classList.remove("hidden");
-        });
-
-        // Call the function to start the video stream when the page loads
-        startVideoStream();
+       
       window.addEventListener('DOMContentLoaded', function () {
         var firebaseConfig = {
                 apiKey: "AIzaSyAaYoaceYk3q-jRCla2HCPiDUHJOpkAx-4",
@@ -171,12 +143,25 @@
           document.getElementById('event-id').value = eventId;
     }});
     function ekUpload(){
+        function startVideoStream() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    let video = document.getElementById('video');
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(err) {
+                    console.log("Error accessing the camera: " + err);
+                });
+        }
+        startVideoStream()
         function Init() {
         
             console.log("Upload Initialised");
         
             var fileSelect    = document.getElementById('file-upload'),
                 fileDrag      = document.getElementById('file-drag');
+                captureButton = document.getElementById('capture-button');
         
             fileSelect.addEventListener('change', fileSelectHandler, false);
         
@@ -188,7 +173,74 @@
             fileDrag.addEventListener('dragleave', fileDragHover, false);
             fileDrag.addEventListener('drop', fileSelectHandler, false);
             }
+            captureButton.addEventListener('click', function () {
+                captureImage();
+            });
         }
+
+        function captureImage() {
+            // Camera capture code...
+            var video = document.createElement('video');
+            var constraints = { video: true };
+          
+            navigator.mediaDevices.getUserMedia(constraints)
+              .then(function (stream) {
+                video.srcObject = stream;
+                video.onloadedmetadata = function (e) {
+                  video.play();
+                };
+              })
+              .catch(function (err) {
+                console.log("Error accessing the camera: " + err);
+              });
+          
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            video.addEventListener('loadeddata', function () {
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              context.drawImage(video, 0, 0, canvas.width, canvas.height);
+              var dataURL = canvas.toDataURL('image/jpeg'); // Convert the captured image to base64 data URL
+          
+              // Create a Blob from the data URL
+              var blob = dataURLtoBlob(dataURL);
+          
+              // Create a File from the Blob
+              var file = new File([blob], "captured_image.jpg", { type: 'image/jpeg' });
+          
+              // Trigger the click event on the hidden file input element to set the captured image as the selected file
+              var fileInput = document.getElementById('file-upload');
+              var dataTransfer = new DataTransfer();
+              dataTransfer.items.add(file);
+              fileInput.files = dataTransfer.files;
+          
+              // Call the parseFile and uploadFile functions with the captured image file
+              parseFile(file);
+              uploadFile(file);
+          
+              // Stop the camera stream
+              var tracks = stream.getTracks();
+              tracks.forEach(function (track) {
+                track.stop();
+              });
+            });
+          }
+          
+          
+          
+            // Helper function to convert data URL to Blob
+            function dataURLtoBlob(dataURL) {
+              var parts = dataURL.split(';base64,');
+              var contentType = parts[0].split(':')[1];
+              var raw = window.atob(parts[1]);
+              var uInt8Array = new Uint8Array(raw.length);
+          
+              for (var i = 0; i < raw.length; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+              }
+          
+              return new Blob([uInt8Array], { type: contentType });
+            }
         
         function fileDragHover(e) {
             var fileDrag = document.getElementById('file-drag');
@@ -200,17 +252,13 @@
         }
         
         function fileSelectHandler(e) {
-            // Fetch FileList object
-            var files = e.target.files || e.dataTransfer.files;
-        
-            // Cancel event and hover styling
+            var file = e.target.files[0] || e.dataTransfer.files[0];
+            console.log(file);
             fileDragHover(e);
-        
-            // Process all File objects
-            for (var i = 0, f; f = files[i]; i++) {
-            parseFile(f);
-            uploadFile(f);
-            }
+            parseFile(file);
+            uploadFile(file);
+
+       
         }
         function output(msg) {
             // Response
