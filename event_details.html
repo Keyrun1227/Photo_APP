@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Event Details</title>
+  <style>
+ 
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    /* Container to hold all content */
+    #container {
+      max-width: 600px;
+      width: 100%;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+      /* Center the container horizontally */
+      margin: 0 auto;
+
+      flex: 1;
+    }
+
+    /* Navigation Bar */
+    /* Add your navigation bar styles here */
+
+    /* Event Details */
+    #event-details {
+      text-align: center;
+      margin-bottom: 20px; /* Add some spacing at the bottom */
+    }
+    
+
+    /* Event Link Container */
+    #link-container {
+      text-align: center;
+      margin-bottom: 20px; /* Add some spacing at the bottom */
+    }
+
+    #copy-button {
+      font-size: 16px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #copy-button:hover {
+      background-color: #45a049;
+    }
+
+    /* QR Code Generator */
+    #qr-code-container {
+      text-align: center;
+      margin: 20px auto; /* Center the QR code */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+      #container {
+        /* Adjust padding for smaller screens */
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<link rel="stylesheet" href="css/event.css" />
+
+<body>
+  <!-- Navigation Bar -->
+  <nav style="height: 4rem;">
+    <div>
+      <img style="padding-top: 10px;" src="images/logo1.jpg" height="50px"  alt="Logo">
+      <span style="font-size: 40px;">Face Recognition</span>
+    </div>
+    <div id="user-profile">
+      <span style="font-size: 30px;" id="user-email"></span>
+     <a href="login.html" style="font-size: 10px;color:red"><span>Logout</span></a>
+      
+      
+    </div>
+  </nav>
+  <!-- ... (copy the navigation bar from your index.html) ... -->
+
+  <!-- Event Details -->
+  <div id="event-details">
+    <h2>Event Details</h2>
+    <div id="event-details-content">
+      <p><strong>Event Name:</strong> <span id="event-name"></span></p>
+      <p><strong>Event ID:</strong> <span id="event-id"></span></p>
+      <p><strong>Date:</strong> <span id="event-date"></span></p>
+    </div>
+  </div>
+  <div id="link-container">
+    <p><strong>Event Link:</strong></p>
+    <div id="event-link"></div>
+    <br>
+    <button id="copy-button">Copy Link</button>
+  </div>
+  <!-- QR Code Generator -->
+  <div id="qr-code-container">
+    <h2>QR Code for User Page</h2>
+    <center><div id="qr-code"></div></center>
+    
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script>
+    
+     var firebaseConfig = {
+        apiKey: "AIzaSyAaYoaceYk3q-jRCla2HCPiDUHJOpkAx-4",
+        authDomain: "photoapplogin-48b0d.firebaseapp.com",
+        databaseURL: "https://photoapplogin-48b0d-default-rtdb.firebaseio.com",
+        projectId: "photoapplogin-48b0d",
+        storageBucket: "photoapplogin-48b0d.appspot.com",
+        messagingSenderId: "55404220547",
+        appId: "1:55404220547:web:5519806fc6b77089a84bb6",
+        measurementId: "G-RF3BM9QE2B"
+      };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const storage = firebase.storage();
+    const eventsRef = database.ref('events');
+    // Retrieve the event ID from the query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('eventId');
+
+    // Function to fetch event details from the database based on the event ID
+    function fetchEventDetails(eventId) {
+      eventsRef.child(eventId).once('value').then(snapshot => {
+        const event = snapshot.val();
+        if (event) {
+          document.getElementById('event-name').textContent = event.name;
+          document.getElementById('event-id').textContent = event.eventId;
+          document.getElementById('event-date').textContent = event.date;
+          generateQRCode(event.eventId);
+        } else {
+          console.log('Event not found.');
+        }
+      }).catch(error => {
+        console.error('Error fetching event details:', error);
+      });
+    }
+
+    // Function to generate the QR code for the userpage.html link with the event ID
+    function generateQRCode(eventId) {
+      const qrCodeContainer = document.getElementById('qr-code');
+      const link = `userpage.html?eventId=${eventId}`;
+      const qrcode = new QRCode(qrCodeContainer, {
+        text: link,
+        width: 200,
+        height: 200,
+      });
+    }
+    function copyEventLink() {
+      const eventLink = document.getElementById('event-link').textContent;
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = eventLink;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+      alert('Link copied to clipboard!');
+    }
+
+    // Display the event link and add a click event listener to the "Copy Link" button
+    const eventLinkContainer = document.getElementById('event-link');
+    const link = `userpage.html?eventId=${eventId}`;
+    eventLinkContainer.textContent = link;
+    const copyButton = document.getElementById('copy-button');
+    copyButton.addEventListener('click', copyEventLink);
+    // Call the function to fetch event details and generate the QR code on page load
+    fetchEventDetails(eventId);
+  </script>
+</body>
+</html>
