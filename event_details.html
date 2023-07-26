@@ -3,8 +3,38 @@
 <html>
 <head>
   <title>Event Details</title>
-  <style>
- 
+   <style>
+     @media (max-width: 600px) {
+      /* Adjust navigation bar styles for smaller screens */
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Adjust the logo and title alignment */
+      img {
+        padding-top: 10px;
+      }
+
+      span {
+        font-size: 24px;
+      }
+
+      /* Adjust event details styles */
+      #event-details-content {
+        font-size: 14px;
+      }
+
+      /* Adjust link container styles */
+      #link-container {
+        font-size: 14px;
+      }
+
+      /* Adjust QR code container styles */
+      #qr-code-container {
+        font-size: 14px;
+      }
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -12,7 +42,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 100vh;
+      min-height: 20vh;
       background-color: #f0f0f0;
     }
 
