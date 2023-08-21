@@ -1,14 +1,13 @@
 window.addEventListener('DOMContentLoaded', function () {
-var firebaseConfig = {
-        apiKey: "AIzaSyAaYoaceYk3q-jRCla2HCPiDUHJOpkAx-4",
-        authDomain: "photoapplogin-48b0d.firebaseapp.com",
-        databaseURL: "https://photoapplogin-48b0d-default-rtdb.firebaseio.com",
-        projectId: "photoapplogin-48b0d",
-        storageBucket: "photoapplogin-48b0d.appspot.com",
-        messagingSenderId: "55404220547",
-        appId: "1:55404220547:web:5519806fc6b77089a84bb6",
-        measurementId: "G-RF3BM9QE2B"
-        };
+var  firebaseConfig = {
+  apiKey: "AIzaSyBEclAZfd1Ty3oUugZq-KL_Uw7-JC8G-MI",
+  authDomain: "photoapplogin-6a46a.firebaseapp.com",
+  projectId: "photoapplogin-6a46a",
+  storageBucket: "photoapplogin-6a46a.appspot.com",
+  messagingSenderId: "470235456268",
+  appId: "1:470235456268:web:8dd7026e56930ab42e5f29",
+  measurementId: "G-4PRSHWJ88Z"
+};
         firebase.initializeApp(firebaseConfig);
         const storage = firebase.storage();
         document.getElementById('file-upload-form').addEventListener('submit', function (event) {
