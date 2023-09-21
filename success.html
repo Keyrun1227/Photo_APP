@@ -79,8 +79,7 @@
         // Update the "Go Back" button's link with the dynamic event ID
         const goBackButton = document.getElementById('goBackButton');
         if (eventId) {
-          const baseUrl = window.location.href.replace('success.html', 'userpage.html');
-          const link = ${baseUrl}?eventId=${eventId};
+          const link = window.location.href.replace('success.html', 'userpage.html');
           goBackButton.href = link;
         } else {
             // If there's no event ID in the URL, go back to the default userpage.html
