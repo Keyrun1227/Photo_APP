@@ -79,7 +79,9 @@
         // Update the "Go Back" button's link with the dynamic event ID
         const goBackButton = document.getElementById('goBackButton');
         if (eventId) {
-            goBackButton.href = "https://keyrun1227.github.io/Photo_APP/userpage.html?eventId=" + eventId;
+          const baseUrl = window.location.href.replace('success.html', 'userpage.html');
+          const link = ${baseUrl}?eventId=${eventId};
+          goBackButton.href = link;
         } else {
             // If there's no event ID in the URL, go back to the default userpage.html
             goBackButton.href = "/userpage.html";
