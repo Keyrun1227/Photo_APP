@@ -192,7 +192,7 @@
     function generateQRCode(eventId) {
       const qrCodeContainer = document.getElementById('qr-code');
       // const link = `https://keyrun1227.github.io/Photo_APP/userpage.html?eventId=${eventId}`;
-      const link = window.location.href;
+      const link = window.location.href.replace('event_details.html', 'userpage.html');
       const qrcode = new QRCode(qrCodeContainer, {
         text: link,
         width: 200,
@@ -213,7 +213,7 @@
     // Display the event link and add a click event listener to the "Copy Link" button
     const eventLinkContainer = document.getElementById('event-link');
     // const link = `https://keyrun1227.github.io/Photo_APP/userpage.html?eventId=${eventId}`;
-    const link = window.location.href;
+    const link = window.location.href.replace('event_details.html', 'userpage.html');
     eventLinkContainer.textContent = link;
     const copyButton = document.getElementById('copy-button');
     copyButton.addEventListener('click', copyEventLink);
