@@ -28,6 +28,9 @@
       <div class="form-group">
           <input type="text" id="event-id" name="event-id" placeholder="Enter your unique_id" required>
       </div> 
+        <div>
+            <video id="video" width="300" height="300" autoplay></video>
+        </div>
      
       <input id="file-upload" type="file" name="photo" accept="image/*" style="display: none;" required>
     
@@ -53,7 +56,7 @@
 <button class="btn btn-primary" type="submit" id="submit" name="submit">Upload</button>
       
   </form>
-  <video id="video" width="300" height="300" autoplay></video>
+  
  
     <!-- Add this before your script -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
